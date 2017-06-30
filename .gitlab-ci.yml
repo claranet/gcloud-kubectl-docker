@@ -9,10 +9,33 @@ variables:
   TAG: latest
 
 build:
+  only:
+    - master
   script:
     - "docker build -t $IMAGE:$TAG ."
 
+build_devel:
+  except:
+    - master
+  script:
+    - "docker build -t $IMAGE:$CI_COMMIT_REF_SLUG ."
+
 test: 
+  only:
+    - master
   script:
     - docker run --rm -t $IMAGE:$TAG -- kubectl --version
+
+test_devel: 
+  except:
+    - master
+  script:
+    - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG --kubectl --version
+
+publish: 
+  only:
+    - master
+  script:
+    - docker login -u="$DOCKER_HUB_USER" -p="$DOCKER_HUB_TOKEN"
+    - docker push $IMAGE:$TAG
 
