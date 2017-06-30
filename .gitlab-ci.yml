@@ -1,0 +1,18 @@
+
+stages:
+  - build
+  - test
+  - publish
+
+variables:
+  IMAGE: claranet/gcloud-kubectl-docker
+  TAG: latest
+
+build:
+  script:
+    - "docker build -t $IMAGE:$TAG ."
+
+test: 
+  script:
+    - docker run --rm -t $IMAGE:$TAG -- kubectl --version
+
