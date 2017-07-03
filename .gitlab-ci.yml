@@ -24,18 +24,18 @@ test:
   only:
     - master
   script:
-    - docker run --rm -t $IMAGE:$TAG -- kubectl --version
+    - docker run --rm -t $IMAGE:$TAG kubectl --version
 
 test_devel: 
   except:
     - master
   script:
-    - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG --kubectl --version
+    - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG kubectl --version
 
 publish: 
   only:
     - master
   script:
-    - docker login -u="$DOCKER_HUB_USER" -p="$DOCKER_HUB_TOKEN"
+    - docker login --username "$DOCKER_HUB_USER" --password "$DOCKER_HUB_TOKEN"
     - docker push $IMAGE:$TAG
 
