@@ -9,18 +9,21 @@ variables:
   TAG: latest
 
 build:
+  stage: build
   only:
     - master
   script:
     - "docker build -t $IMAGE:$TAG ."
 
 build_devel:
+  stage: build
   except:
     - master
   script:
     - "docker build -t $IMAGE:$CI_COMMIT_REF_SLUG ."
 
 test: 
+  stage: test
   only:
     - master
   script:
@@ -28,6 +31,7 @@ test:
     - docker run --rm -t $IMAGE:$TAG gcloud version
 
 test_devel: 
+  stage: test
   except:
     - master
   script:
@@ -35,6 +39,7 @@ test_devel:
     - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG gcloud version
 
 publish: 
+  stage: publish
   only:
     - master
   script:
