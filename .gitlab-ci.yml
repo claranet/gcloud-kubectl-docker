@@ -24,14 +24,14 @@ test:
   only:
     - master
   script:
-    - docker run --rm -t $IMAGE:$TAG kubectl version
+    - docker run --rm -t $IMAGE:$TAG kubectl version --client
     - docker run --rm -t $IMAGE:$TAG gcloud version
 
 test_devel: 
   except:
     - master
   script:
-    - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG kubectl version
+    - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG kubectl version --client
     - docker run --rm -t $IMAGE:$CI_COMMIT_REF_SLUG gcloud version
 
 publish: 
