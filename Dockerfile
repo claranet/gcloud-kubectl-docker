@@ -13,4 +13,10 @@ RUN apk add --no-cache \
 RUN pip install --upgrade pip \
     && pip install docker-compose
 
+RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
+    helm init --client-only
+
 RUN gcloud components update --quiet && gcloud components install kubectl --quiet
+
+RUN helm version --client && gcloud version
+
