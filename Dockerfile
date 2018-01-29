@@ -6,6 +6,7 @@ RUN apk add --no-cache \
     jq \
     git \
     openssh-client \
+    openssl \
     python \
     py2-pip \
     docker
