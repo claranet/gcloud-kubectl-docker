@@ -19,5 +19,8 @@ RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get
 
 RUN gcloud components update --quiet && gcloud components install kubectl --quiet
 
+# configure gcloud git helper for CSR usage
+RUN git config --global credential.helper gcloud.sh
+
 RUN helm version --client && gcloud version
 
