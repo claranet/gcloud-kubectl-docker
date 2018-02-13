@@ -10,9 +10,15 @@ updates anymore. So we needed a current version of those tools.
 ## ...push to gcloud source repo
 
 **gitlab-ci.yaml**
+
+Variables to be injected by gitlab ci secrets:
+* GCLOUD_SERVICEACCOUNT_KEYFILE => the json content of the service account key
+* GCLOUD_PROJECT => GCP project ID
+* GCLOUD_ZONE => GCP zone
+* GCLOUD_REPO => repo name in GCP
+
 ```yaml
 variables:
-  GCLOUD_ZONE: "europe-west1-d"
   GCLOUD_KEYFILE_PATH: "/tmp/${GCLOUD_PROJECT}.iam.gserviceaccount.com.json"
 
 
