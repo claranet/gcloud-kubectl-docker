@@ -18,10 +18,6 @@ Variables to be injected by gitlab ci secrets:
 * GCLOUD_REPO => repo name in GCP
 
 ```yaml
-variables:
-  GCLOUD_KEYFILE_PATH: "/tmp/${GCLOUD_PROJECT}.iam.gserviceaccount.com.json"
-
-
 .configure_gcloud: &configure_gcloud |
   echo "$GCLOUD_SERVICEACCOUNT_KEYFILE" > $GCLOUD_KEYFILE_PATH
   gcloud auth activate-service-account --key-file $GCLOUD_KEYFILE_PATH
@@ -34,15 +30,19 @@ after_script:
 
 # the actual job:
 myjob:
-  stage: publish
+  stage: deploy
+  image: claranet/gcloud-kubectl-docker
   environment:
     name: GCR
     url: https://console.cloud.google.com/code/develop/browse/${GCLOUD_REPO}/master?project=${GCLOUD_PROJECT}
+  variables:
+    GCLOUD_KEYFILE_PATH: "/tmp/${GCLOUD_PROJECT}.iam.gserviceaccount.com.json"
+    GIT_STRATEGY: "clone"
+    GIT_CHECKOUT: "true"
   script:
     - *configure_gcloud
+    - git checkout $CI_COMMIT_REF_NAME
     - git remote add google https://source.developers.google.com/p/${GCLOUD_PROJECT}/r/${GCLOUD_REPO}
-    - git push google
+    - git push --all google
     - git push --tags google
 ```
-
-
