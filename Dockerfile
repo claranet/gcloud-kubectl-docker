@@ -1,6 +1,6 @@
 FROM google/cloud-sdk:alpine
 
-LABEL version="1.0.0"
+LABEL version="1.1.0"
 
 RUN apk add --no-cache \
     bash \
@@ -10,8 +10,10 @@ RUN apk add --no-cache \
     openssh-client \
     openssl \
     python \
-    py2-pip \
-    docker
+    py2-pip
+
+# install docker
+COPY --from=docker:18 /usr/local/bin/docker* /usr/bin/
 
 RUN pip install --upgrade pip \
     && pip install docker-compose
