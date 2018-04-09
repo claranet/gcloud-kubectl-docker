@@ -1,6 +1,6 @@
 FROM google/cloud-sdk:alpine
 
-LABEL version="1.1.0"
+LABEL version="1.1.1"
 
 RUN apk add --no-cache \
     bash \

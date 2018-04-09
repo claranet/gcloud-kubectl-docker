@@ -13,14 +13,15 @@ build:
   only:
     - master
   script:
-    - "docker build -t $IMAGE:$TAG ."
+    - docker pull google/cloud-sdk:alpine # update local copy of the cloud-sdk
+    - docker build -t $IMAGE:$TAG .
 
 build_devel:
   stage: build
   except:
     - master
   script:
-    - "docker build -t $IMAGE:$CI_COMMIT_REF_SLUG ."
+    - docker build -t $IMAGE:$CI_COMMIT_REF_SLUG .
 
 test: 
   stage: test
