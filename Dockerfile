@@ -5,6 +5,7 @@ LABEL version="1.1.1"
 RUN apk add --no-cache \
     bash \
     curl \
+    gettext \
     jq \
     git \
     openssh-client \
