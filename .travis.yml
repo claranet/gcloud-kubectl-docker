@@ -1,0 +1,14 @@
+services:
+- docker
+  
+jobs:
+  include:
+    
+    - name: Build and deploy docker image
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+        - docker build -t claranet/gcloud-kubectl-docker:latest .
+        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:$TRAVIS_BRANCH
+        - docker push claranet/gcloud-kubectl-docker:latest
+        - docker push claranet/gcloud-kubectl-docker:$TRAVIS_BRANCH
+
