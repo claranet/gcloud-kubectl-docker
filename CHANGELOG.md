@@ -1,3 +1,6 @@
+# 1.2.0
+
+* [imgae] Install kubectl via curl
 
 # 1.1.1 - 2018-04-09
 

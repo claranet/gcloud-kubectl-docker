@@ -22,7 +22,8 @@ RUN pip install --upgrade pip \
 RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
     helm init --client-only
 
-RUN gcloud components update --quiet && gcloud components install kubectl --quiet
+# Install kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 
 # configure gcloud git helper for CSR usage
 RUN git config --global credential.helper gcloud.sh
