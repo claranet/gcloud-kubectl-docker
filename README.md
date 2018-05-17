@@ -1,7 +1,20 @@
-# Docker image: claranet/gcloud-kubectl-docker
 
-This is a helper image useful in CI/CD jobs. Its been necessary to roll our
-very own one, because the plentytude available out there are not getting
-updates anymore. So we needed a current version of those tools.
+Current version: **1.2.1**
+
+Provides a collection of tools to easily do CI/CD for/in kubernetes related
+tasks. So it contains
+
+* kubectl
+* Googles cloud-sdk (CLI tools)
+* helmfile
+* helm
+* envsubst
+* docker (and docker-compose)
+* bash
+* git
+* ssh-client
+
+
+You can find the resulting docker image at https://hub.docker.com/r/claranet/gcloud-kubectl-docker
 
 
