@@ -1,4 +1,12 @@
-# 1.2.0
+
+
+# 1.2.1 - 2018-05-19
+
+* rework README
+* introduce bump2version for versioning
+
+
+# 1.2.0 - 2018-05-16
 
 * [imgae] Install kubectl via curl
 
