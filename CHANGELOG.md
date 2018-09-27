@@ -1,4 +1,11 @@
 
+# 1.2.2 - 2018-09-27
+
+## FIXES
+
+* move kubectl binary to /usr/bin/
+* make kubectl executeable
+* add Dockerfile check for kubectl to ensure it's working
 
 # 1.2.1 - 2018-05-19
 

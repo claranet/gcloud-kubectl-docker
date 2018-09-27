@@ -23,10 +23,12 @@ RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get
     helm init --client-only
 
 # Install kubectl
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl; \
+    mv kubectl /usr/bin/kubectl; \
+    chmod +x /usr/bin/kubectl
 
 # configure gcloud git helper for CSR usage
 RUN git config --global credential.helper gcloud.sh
 
-RUN helm version --client && gcloud version
+RUN helm version --client && gcloud version && kubectl version --client
 
