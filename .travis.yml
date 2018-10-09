@@ -15,27 +15,32 @@ jobs:
         - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TRAVIS_BRANCH}
         - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
 
-        - echo docker push claranet/gcloud-kubectl-docker:latest
         - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TRAVIS_BRANCH}
         - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+        - echo docker push claranet/gcloud-kubectl-docker:latest
 
 
     - name: Build and push docker image with the newest kube-version
       if: type = push
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-        - LATEST_KUBE_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+
         - TAG=$(echo $TRAVIS_BRANCH | tr "/" "-")
+        - KUBE_TAGS=$(curl -sSL https://registry.hub.docker.com/v1/repositories/mirrorgooglecontainers/kube-apiserver-amd64/tags)
+        - MINOR_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | cut -d "." -f2)
 
-        - docker build -t claranet/gcloud-kubectl-docker:latest --build-args KUBE_VERSION=$LATEST_KUBE_VERSION .
+        - for mv in $(seq $((MINOR_VERSION - 3)) $MINOR_VERSION); do 
 
-        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TAG}
-        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+        -     KUBE_VERSION=$(echo $KUBE_TAGS | jq '.[] | .name' | grep v1.$mv | grep -v "-" | sort -r --version-sort | head -n1 | tr -d '"')
 
-        - echo docker push claranet/gcloud-kubectl-docker:latest
-        - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TAG}
-        - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+        -     docker build -t claranet/gcloud-kubectl-docker:latest --build-arg KUBE_VERSION=$KUBE_VERSION .
 
-        - echo "done"
+        -     docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${KUBE_VERSION}-${TAG}
+        -     docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${KUBE_VERSION}-latest
 
+        -     echo docker push claranet/gcloud-kubectl-docker:${KUBE_VERSION}-${TAG}
+        -     echo docker push claranet/gcloud-kubectl-docker:${KUBE_VERSION}-latest
 
+        -     [[ $mv = $MINOR_VERSION ]] && echo docker push claranet/gcloud-kubectl-docker:latest
+
+        - done
