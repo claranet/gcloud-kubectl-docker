@@ -4,11 +4,35 @@ services:
 jobs:
   include:
     
-    - name: Build and deploy docker image
+    - name: Build and push docker image with the newest kube-version
+      if: type = cron
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-        - docker build -t claranet/gcloud-kubectl-docker:latest .
-        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:$TRAVIS_BRANCH
-        - docker push claranet/gcloud-kubectl-docker:latest
-        - docker push claranet/gcloud-kubectl-docker:$TRAVIS_BRANCH
+        - LATEST_KUBE_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+
+        - docker build -t claranet/gcloud-kubectl-docker:latest --build-args KUBE_VERSION=$LATEST_KUBE_VERSION .
+
+        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TRAVIS_BRANCH}
+        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+
+        - echo docker push claranet/gcloud-kubectl-docker:latest
+        - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TRAVIS_BRANCH}
+        - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+
+
+    - name: Build and push docker image with the newest kube-version
+      if: type = push
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+        - LATEST_KUBE_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+
+        - docker build -t claranet/gcloud-kubectl-docker:latest --build-args KUBE_VERSION=$LATEST_KUBE_VERSION .
+
+        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TRAVIS_BRANCH}
+        - docker tag claranet/gcloud-kubectl-docker:latest claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+
+        - echo docker push claranet/gcloud-kubectl-docker:latest
+        - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-${TRAVIS_BRANCH}
+        - echo docker push claranet/gcloud-kubectl-docker:${LATEST_KUBE_VERSION}-latest
+
 
