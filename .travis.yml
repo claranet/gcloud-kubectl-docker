@@ -12,7 +12,7 @@ jobs:
 
         - bin/build latest $TAG
 
-    - name: Build and push docker images for the last 4 kube-versions
+    - name: Build and push docker images for the last 4 minor kube-versions
       if: type = push
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
