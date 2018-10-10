@@ -13,7 +13,7 @@ TAG=$2
 
 build_minor() {
 
-	KUBE_VERSION=$(echo $KUBE_TAGS | jq '.[] | .name' | grep v1.$1 | grep -v "-" | sort -r --version-sort | head -n1 | tr -d '"')
+    KUBE_VERSION=$(echo $KUBE_TAGS | jq '.[] | .name' | grep v1.$1 | grep -v "-" | sort -r --version-sort | head -n1 | tr -d '"')
 
     docker build -t claranet/gcloud-kubectl-docker:latest --build-arg KUBE_VERSION=$KUBE_VERSION .
     
@@ -23,7 +23,7 @@ build_minor() {
     echo docker push claranet/gcloud-kubectl-docker:${KUBE_VERSION}-${TAG}
     echo docker push claranet/gcloud-kubectl-docker:${KUBE_VERSION}-latest
 
-	[[ $minor = $MINOR_VERSION ]] && echo docker push claranet/gcloud-kubectl-docker:latest
+    [[ $minor = $MINOR_VERSION ]] && echo docker push claranet/gcloud-kubectl-docker:latest
 
     echo "---------------------------------------------------------------------------------"
 }
