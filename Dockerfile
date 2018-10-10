@@ -24,6 +24,11 @@ RUN pip install --upgrade pip \
 RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
     helm init --client-only
 
+# Install cfssl and cfssljson
+RUN curl -sSL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 > /usr/bin/cfssl \
+ && curl -sSL https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 > /usr/bin/cfssljson \
+ && chmod +x /usr/bin/cfssl /usr/bin/cfssljson
+
 # Install kubectl and kubeadm
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl > /usr/bin/kubectl \
  && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubeadm > /usr/bin/kubeadm \
