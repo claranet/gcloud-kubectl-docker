@@ -1,0 +1,111 @@
+#!/bin/bash
+
+#
+# Builds docker images for different minor versions of kubernetes
+#
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+TAG=${3:-$(cat VERSION)}
+
+latest_version() { 
+	curl -sSL https://storage.googleapis.com/kubernetes-release/release/stable.txt
+}
+
+# get_latest_for_minor <MINOR_VERSION> <KUBE_TAGS>
+get_latest_for_minor() { 
+	echo $2 | jq '.[] | .name' | grep v1.$1 | grep -v "-" | sort -r --version-sort | head -n1 | tr -d '"'
+}
+
+last4minors() {
+	current_minor=$(latest_version | cut -d "." -f2)
+	kube_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/mirrorgooglecontainers/kube-apiserver-amd64/tags)
+
+    for minor in $(seq $((current_minor - 3)) $current_minor); do
+    	get_latest_for_minor $minor "$kube_tags"
+    done
+}
+
+# build_images <VERSION...>
+build_images() {
+	for version in $@; do 
+        docker build -t claranet/gcloud-kubectl-docker:${version}-${TAG} --build-arg KUBE_VERSION=$version .
+    done
+}
+
+# push_images <VERSION...>
+push_images() {
+
+	latest_version=$(latest_version)
+
+	for version in $@; do 
+        docker tag claranet/gcloud-kubectl-docker:${version}-${TAG} claranet/gcloud-kubectl-docker:${version}-latest
+        echo docker push claranet/gcloud-kubectl-docker:${version}-${TAG}
+        echo docker push claranet/gcloud-kubectl-docker:${version}-latest
+
+        if [[ $version = $latest_version ]]; then
+            docker tag claranet/gcloud-kubectl-docker:${version}-${TAG} claranet/gcloud-kubectl-docker:latest
+        	echo docker push claranet/gcloud-kubectl-docker:latest
+        fi
+    done
+}
+
+# test_images <VERSION...>
+test_images() {
+	for version in $@; do 
+        docker run claranet/gcloud-kubectl-docker:${version}-${TAG} \
+        	sh -c "helm version --client && gcloud version && kubectl version --client && kubeadm version"
+    done
+}
+
+print_usage() {
+	printf "\nUsage: $0 <build|push> <latest|last4minors|VERSION> (<TAG>)\n\n"
+    exit 1
+}
+
+case $1 in
+	
+    build)
+    	case $2 in 
+    	latest)
+			build_images $(latest_version) 
+			;;
+		last4minors)
+			build_images $(last4minors)
+			;;
+		*) 
+			build_images $2
+			;;
+		esac
+		;;
+    test)
+		case $2 in
+		latest)
+			test_images $(latest_version)
+			;;
+		last4minors)
+			test_images $(last4minors)
+			;;
+		*) 
+			test_images $2
+			;;
+		esac
+		;;
+	push)
+		case $2 in
+		latest)
+			push_images $(latest_version)
+			;;
+		last4minors)
+			push_images $(last4minors)
+			;;
+		*) 
+			push_images $2
+			;;
+		esac
+		;;
+	*)
+	    print_usage
+esac

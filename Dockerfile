@@ -24,6 +24,9 @@ RUN pip install --upgrade pip \
 RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
     helm init --client-only
 
+# configure gcloud git helper for CSR usage
+RUN git config --global credential.helper gcloud.sh
+
 # Install cfssl and cfssljson
 RUN curl -sSL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 > /usr/bin/cfssl \
  && curl -sSL https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 > /usr/bin/cfssljson \
@@ -33,9 +36,4 @@ RUN curl -sSL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 > /usr/bin/cfssl \
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl > /usr/bin/kubectl \
  && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubeadm > /usr/bin/kubeadm \
  && chmod +x /usr/bin/kubectl /usr/bin/kubeadm
-
-# configure gcloud git helper for CSR usage
-RUN git config --global credential.helper gcloud.sh
-
-RUN helm version --client && gcloud version && kubectl version --client
 

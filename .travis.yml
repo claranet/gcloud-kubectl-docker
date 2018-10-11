@@ -10,7 +10,9 @@ jobs:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
         - TAG=$(echo $TRAVIS_BRANCH | tr "/" "-")
 
-        - bin/build latest $TAG
+        - bin/image build latest $TAG
+        - bin/image test latest $TAG
+        - bin/image push latest $TAG
 
     - name: Build and push docker images for the last 4 minor kube-versions
       if: type = push
@@ -18,4 +20,6 @@ jobs:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
         - TAG=$(echo $TRAVIS_BRANCH | tr "/" "-")
 
-        - bin/build last4minors $TAG
+        - bin/image build last4minors $TAG
+        - bin/image test last4minors $TAG
+        - bin/image push last4minors $TAG
