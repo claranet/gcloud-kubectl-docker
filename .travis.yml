@@ -5,7 +5,7 @@ jobs:
   include:
     
     - name: Build and push docker image with the newest kube-version
-      if: type = cron AND branch = master
+      if: type = cron 
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
@@ -14,22 +14,13 @@ jobs:
         - bin/image push latest
 
 
-    - name: Build and test docker images for the last 4 minor kube-versions
-      if: type = push 
-      script:
-        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-        - TAG=$(echo $TRAVIS_BRANCH | tr "/" "-")
-
-        - bin/image build last4minors $TAG
-        - bin/image test last4minors $TAG
-
-
     - name: Build and push docker images for the last 4 minor kube-versions
-      if: type = push AND branch = master AND tag IS present
+      if: type != cron
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
         - bin/image build last4minors $TRAVIS_TAG
         - bin/image test last4minors $TRAVIS_TAG
-        - bin/image push last4minors $TRAVIS_TAG
+
+        - test -z "$TRAVIS_TAG" || bin/image push last4minors $TRAVIS_TAG
 
