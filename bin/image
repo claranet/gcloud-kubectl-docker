@@ -42,12 +42,12 @@ push_images() {
 
     for version in $@; do 
         docker tag claranet/gcloud-kubectl-docker:${version}-${TAG} claranet/gcloud-kubectl-docker:${version}-latest
-        echo docker push claranet/gcloud-kubectl-docker:${version}-${TAG}
-        echo docker push claranet/gcloud-kubectl-docker:${version}-latest
+        docker push claranet/gcloud-kubectl-docker:${version}-${TAG}
+        docker push claranet/gcloud-kubectl-docker:${version}-latest
 
         if [[ $version = $latest_version ]]; then
             docker tag claranet/gcloud-kubectl-docker:${version}-${TAG} claranet/gcloud-kubectl-docker:latest
-            echo docker push claranet/gcloud-kubectl-docker:latest
+            docker push claranet/gcloud-kubectl-docker:latest
         fi
     done
 }
