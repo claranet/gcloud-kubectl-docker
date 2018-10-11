@@ -65,46 +65,27 @@ print_usage() {
     exit 1
 }
 
+case $2 in 
+    latest)
+    	versions=$(latest_version) 
+    	;;
+    last4minors)
+    	versions=$(last4minors)
+    	;;
+    *) 
+    	versions=$2
+esac
+	
 case $1 in
 	
     build)
-    	case $2 in 
-    	latest)
-			build_images $(latest_version) 
-			;;
-		last4minors)
-			build_images $(last4minors)
-			;;
-		*) 
-			build_images $2
-			;;
-		esac
+    	build_images $versions
 		;;
     test)
-		case $2 in
-		latest)
-			test_images $(latest_version)
-			;;
-		last4minors)
-			test_images $(last4minors)
-			;;
-		*) 
-			test_images $2
-			;;
-		esac
+    	test_images $versions
 		;;
 	push)
-		case $2 in
-		latest)
-			push_images $(latest_version)
-			;;
-		last4minors)
-			push_images $(last4minors)
-			;;
-		*) 
-			push_images $2
-			;;
-		esac
+		push_images $versions
 		;;
 	*)
 	    print_usage
