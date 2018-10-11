@@ -1,3 +1,7 @@
+# 1.3.2 - 2018-10-11
+
+* [ci] fix tag detection
+
 # 1.3.1 - 2018-10-11
 
 * [fix] enable pushing in script
