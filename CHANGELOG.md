@@ -1,3 +1,12 @@
+# 1.2.3 - 2018-10-11
+
+* [image] add kubeadm
+* [image] add cfssl
+* [image] add cfssljson
+* [image] kube version ist now a required build arg
+* add script for building, testing and pushing images for different kube version
+* [ci] add travis cronjob which builds the image for the latest kube version
+* [ci] add travis job which rebuilds the image for the last 4 minor versions of kubernetes
 
 # 1.2.2 - 2018-09-27
 
