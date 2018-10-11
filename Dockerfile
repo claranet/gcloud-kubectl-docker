@@ -1,6 +1,7 @@
 FROM google/cloud-sdk:alpine
 
 ARG KUBE_VERSION
+ARG KUBE_BINARY_URL="https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64"
 
 LABEL version="1.2.2"
 
@@ -21,7 +22,7 @@ COPY --from=docker:18 /usr/local/bin/docker* /usr/bin/
 RUN pip install --upgrade pip \
     && pip install docker-compose
 
-RUN curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
+RUN curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
     helm init --client-only
 
 # configure gcloud git helper for CSR usage
@@ -33,7 +34,7 @@ RUN curl -sSL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 > /usr/bin/cfssl \
  && chmod +x /usr/bin/cfssl /usr/bin/cfssljson
 
 # Install kubectl and kubeadm
-RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl > /usr/bin/kubectl \
- && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubeadm > /usr/bin/kubeadm \
+RUN curl -sSL ${KUBE_BINARY_URL}/kubectl -o /usr/bin/kubectl \
+ && curl -sSL ${KUBE_BINARY_URL}/kubeadm -o /usr/bin/kubeadm \
  && chmod +x /usr/bin/kubectl /usr/bin/kubeadm
 
