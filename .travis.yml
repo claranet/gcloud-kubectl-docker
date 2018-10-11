@@ -8,18 +8,28 @@ jobs:
       if: type = cron AND branch = master
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-        - TAG=$(echo $TRAVIS_BRANCH | tr "/" "-")
 
-        - bin/image build latest $TAG
-        - bin/image test latest $TAG
-        - bin/image push latest $TAG
+        - bin/image build latest 
+        - bin/image test latest 
+        - bin/image push latest
 
-    - name: Build and push docker images for the last 4 minor kube-versions
-      if: type = push AND branch = master
+
+    - name: Build and test docker images for the last 4 minor kube-versions
+      if: type = push 
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
         - TAG=$(echo $TRAVIS_BRANCH | tr "/" "-")
 
         - bin/image build last4minors $TAG
         - bin/image test last4minors $TAG
-        - bin/image push last4minors $TAG
+
+
+    - name: Build and push docker images for the last 4 minor kube-versions
+      if: type = push AND branch = master AND tag IS present
+      script:
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+
+        - bin/image build last4minors $TRAVIS_TAG
+        - bin/image test last4minors $TRAVIS_TAG
+        - bin/image push last4minors $TRAVIS_TAG
+
