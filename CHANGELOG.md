@@ -1,4 +1,9 @@
-# 1.2.3 - 2018-10-11
+# 1.3.1 - 2018-10-11
+
+* [fix] enable pushing in script
+* [ci] now only pushes images when tagged
+
+# 1.3.0 - 2018-10-11
 
 * [image] add kubeadm
 * [image] add cfssl
