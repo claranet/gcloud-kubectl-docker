@@ -9,9 +9,10 @@ jobs:
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
-        - bin/image build new_versions
-        - bin/image test new_versions
-        - bin/image push new_versions
+        - bin/image set_versions missing
+        - bin/image build
+        - bin/image test
+        - bin/image push
 
 
     - name: Build and push docker images for the last 4 minor kube-versions
@@ -19,8 +20,9 @@ jobs:
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
-        - bin/image build last4minors $TRAVIS_TAG
-        - bin/image test last4minors $TRAVIS_TAG
+        - bin/image set_versions last4minors
+        - bin/image build $TRAVIS_TAG
+        - bin/image test $TRAVIS_TAG
 
-        - test -z "$TRAVIS_TAG" || bin/image push last4minors $TRAVIS_TAG
+        - test -z "$TRAVIS_TAG" || bin/image push $TRAVIS_TAG
 

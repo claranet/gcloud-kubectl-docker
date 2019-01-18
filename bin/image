@@ -4,11 +4,9 @@
 # Builds, tests and pushes docker images for different versions of kubernetes
 #
 
-set -o errexit
 set -o pipefail
+set -o errexit
 set -o nounset
-
-TAG=${3:-$(cat VERSION)}
 
 latest_version() { 
     curl -sSL https://storage.googleapis.com/kubernetes-release/release/stable.txt
@@ -28,13 +26,13 @@ last4minors() {
     done
 }
 
-# filters kube versions which are already pushed
-# missing_from_repo <VERSION...>
-missing_from_repo() {
-    present_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/claranet/gcloud-kubectl-docker/tags)
+# filters kube versions which were already pushed to dockerhub
+# missing_from_registry <VERSION...>
+missing_from_registry() {
+    dockerhub_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/claranet/gcloud-kubectl-docker/tags)
 
     for version in $@; do
-        echo $present_tags | jq '.[] | .name' | grep $version > /dev/null || echo $version
+        echo $dockerhub_tags | jq '.[] | .name' | grep $version > /dev/null || echo $version
     done
 }
 
@@ -42,6 +40,14 @@ missing_from_repo() {
 build_images() {
     for version in $@; do 
         docker build -t claranet/gcloud-kubectl-docker:${version}-${TAG} --build-arg KUBE_VERSION=$version .
+    done
+}
+
+# test_images <VERSION...>
+test_images() {
+    for version in $@; do
+        docker run claranet/gcloud-kubectl-docker:${version}-${TAG} \
+            sh -c "helm version --client && gcloud version && kubectl version --client && kubeadm version"
     done
 }
 
@@ -62,44 +68,63 @@ push_images() {
     done
 }
 
-# test_images <VERSION...>
-test_images() {
-    for version in $@; do 
-        docker run claranet/gcloud-kubectl-docker:${version}-${TAG} \
-            sh -c "helm version --client && gcloud version && kubectl version --client && kubeadm version"
-    done
-}
-
 print_usage() {
-    printf "\nUsage: $0 <build|push> <latest|last4minors|VERSION> (<TAG>)\n\n"
+    printf "\nUsage: $0 <set_version|set_versions> <latest|last4minors|missing|VERSIONS>\n       $0 <build|test|push> (<TAG>)\n\n"
     exit 1
 }
 
-case $2 in 
+get_versions() {
+    cat /tmp/gcloud-kubectl-docker-versions
+}
 
-    latest)
-        versions=$(latest_version) 
-        ;;
-    last4minors)
-        versions=$(last4minors)
-        ;;
-    new_versions)
-        versions=$(missing_from_repo $(last4minors))
-        ;;
-    *) 
-        versions=$2
-esac
+set_versions() {
+
+    set +o nounset
+    [[ -z "$1" ]] && print_usage
+    set -o nounset
+
+    case "$1" in
     
-case $1 in
-    
+        # latest minor and patch version
+        latest)
+            versions=$(latest_version)
+            ;;
+        # latest patch versions of the last 4 minors
+        last4minors)
+            versions=$(last4minors)
+            ;;
+        # latest patch versions of the last 4 minors, which haven't been pushed to the registry
+        missing)
+            versions="$(missing_from_registry $(last4minors))"
+            ;;
+        *)
+            versions="$@"
+    esac
+
+    echo "$versions" > /tmp/gcloud-kubectl-docker-versions
+}
+
+set +o nounset
+[[ -z "$1" ]] && print_usage
+set -o nounset
+
+case "$1" in
+
+    set_version|set_versions)
+        shift
+        set_versions $@
+        ;;
     build)
-        build_images $versions
+        TAG=${2:-$(cat VERSION)}
+        build_images $(get_versions)
         ;;
     test)
-        test_images $versions
+        TAG=${2:-$(cat VERSION)}
+        test_images $(get_versions)
         ;;
     push)
-        push_images $versions
+        TAG=${2:-$(cat VERSION)}
+        push_images $(get_versions)
         ;;
     *)
         print_usage
