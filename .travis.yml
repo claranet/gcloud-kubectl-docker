@@ -9,9 +9,9 @@ jobs:
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
-        - bin/image build latest 
-        - bin/image test latest 
-        - bin/image push latest
+        - bin/image build new_versions
+        - bin/image test new_versions
+        - bin/image push new_versions
 
 
     - name: Build and push docker images for the last 4 minor kube-versions
