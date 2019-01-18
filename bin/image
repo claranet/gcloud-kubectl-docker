@@ -28,6 +28,16 @@ last4minors() {
     done
 }
 
+# filters kube versions which are already pushed
+# missing_from_repo <VERSION...>
+missing_from_repo() {
+    present_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/claranet/gcloud-kubectl-docker/tags)
+
+    for version in $@; do
+        echo $present_tags | jq '.[] | .name' | grep $version > /dev/null || echo $version
+    done
+}
+
 # build_images <VERSION...>
 build_images() {
     for version in $@; do 
@@ -72,6 +82,9 @@ case $2 in
         ;;
     last4minors)
         versions=$(last4minors)
+        ;;
+    new_versions)
+        versions=$(missing_from_repo $(last4minors))
         ;;
     *) 
         versions=$2
