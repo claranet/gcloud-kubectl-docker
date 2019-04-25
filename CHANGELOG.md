@@ -1,3 +1,7 @@
+# 1.3.3 - 2019-04-25
+
+* [fix] missing build-deps for docker-compose
+
 # 1.3.2 - 2018-10-11
 
 * [ci] fix tag detection
