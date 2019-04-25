@@ -3,7 +3,7 @@ FROM google/cloud-sdk:alpine
 ARG KUBE_VERSION
 ARG KUBE_BINARY_URL="https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64"
 
-LABEL version="1.3.2"
+LABEL version="1.3.3"
 
 RUN apk add --no-cache \
     bash \
@@ -19,8 +19,18 @@ RUN apk add --no-cache \
 # install docker
 COPY --from=docker:18 /usr/local/bin/docker* /usr/bin/
 
-RUN pip install --upgrade pip \
-    && pip install docker-compose
+RUN pip install --upgrade pip
+
+# install docker-compose
+RUN apk add --no-cache --virtual build-deps \
+    gcc \
+    python-dev \
+    libffi-dev \
+    openssl-dev \
+    libc-dev \
+    make \
+ && pip install docker-compose \
+ && apk del build-deps
 
 RUN curl -sSL https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash; \
     helm init --client-only
