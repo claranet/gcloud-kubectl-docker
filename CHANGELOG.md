@@ -1,3 +1,7 @@
+# 1.4.0 - 2019-08-29
+
+* [image] add helmfile
+
 # 1.3.3 - 2019-04-25
 
 * [fix] missing build-deps for docker-compose
