@@ -1,3 +1,7 @@
+# 1.5.0 - 2019-08-29
+
+* [image] add helm diff plugin
+
 # 1.4.0 - 2019-08-29
 
 * [image] add helmfile
