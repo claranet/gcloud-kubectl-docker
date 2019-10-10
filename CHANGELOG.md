@@ -1,3 +1,8 @@
+# 1.5.1 - 2019-10-10
+
+* [fix] user our own docker binary again, not the old one from cloud-sdk
+* [script] when running the image test, also "test" the docker image (print docker version)
+
 # 1.5.0 - 2019-08-29
 
 * [image] add helm diff plugin
