@@ -17,7 +17,7 @@ RUN apk add --no-cache \
     py2-pip
 
 # install docker
-COPY --from=docker:18 /usr/local/bin/docker* /usr/bin/
+COPY --from=docker:18 /usr/local/bin/docker* /usr/local/bin/
 
 RUN pip install --upgrade pip
 
