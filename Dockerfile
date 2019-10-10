@@ -46,7 +46,7 @@ RUN curl -sSL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 > /usr/bin/cfssl \
 RUN curl -sSL https://github.com/roboll/helmfile/releases/download/v0.81.3/helmfile_linux_amd64 -o /usr/bin/helmfile \
  && chmod +x /usr/bin/helmfile
 
-RUN helm plugin install https://github.com/databus23/helm-diff --version master
+RUN helm plugin install https://github.com/databus23/helm-diff --version v2.11.0+5
 
 # Install kubectl and kubeadm
 RUN curl -sSL ${KUBE_BINARY_URL}/kubectl -o /usr/bin/kubectl \
