@@ -3,7 +3,7 @@ FROM google/cloud-sdk:alpine
 ARG KUBE_VERSION
 ARG KUBE_BINARY_URL="https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64"
 
-LABEL version="1.5.0"
+LABEL version="1.5.1"
 
 RUN apk add --no-cache \
     bash \
@@ -17,7 +17,7 @@ RUN apk add --no-cache \
     py2-pip
 
 # install docker
-COPY --from=docker:18 /usr/local/bin/docker* /usr/bin/
+COPY --from=docker:18 /usr/local/bin/docker* /usr/local/bin/
 
 RUN pip install --upgrade pip
 
@@ -46,7 +46,7 @@ RUN curl -sSL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 > /usr/bin/cfssl \
 RUN curl -sSL https://github.com/roboll/helmfile/releases/download/v0.81.3/helmfile_linux_amd64 -o /usr/bin/helmfile \
  && chmod +x /usr/bin/helmfile
 
-RUN helm plugin install https://github.com/databus23/helm-diff --version master
+RUN helm plugin install https://github.com/databus23/helm-diff --version v2.11.0+5
 
 # Install kubectl and kubeadm
 RUN curl -sSL ${KUBE_BINARY_URL}/kubectl -o /usr/bin/kubectl \
