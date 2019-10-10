@@ -47,7 +47,7 @@ build_images() {
 test_images() {
     for version in $@; do
         docker run claranet/gcloud-kubectl-docker:${version}-${TAG} \
-            sh -c "helm version --client && gcloud version && kubectl version --client && kubeadm version"
+            sh -c "helm version --client && gcloud version && kubectl version --client && kubeadm version && docker --version"
     done
 }
 
