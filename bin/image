@@ -19,7 +19,7 @@ get_latest_for_minor() {
 
 last4minors() {
     current_minor=$(latest_version | cut -d "." -f2)
-    kube_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/mirrorgooglecontainers/kube-apiserver-amd64/tags)
+    kube_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/cruse/kube-apiserver-amd64/tags)
 
     for minor in $(seq $((current_minor - 3)) $current_minor); do
         get_latest_for_minor $minor "$kube_tags"
