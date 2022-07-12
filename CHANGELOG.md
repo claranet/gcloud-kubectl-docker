@@ -1,3 +1,7 @@
+# 1.6.0 - 2022-07-12
+
+* [ci] Remove TravisCI as deprecated and replace by GitHub Actions
+
 # 1.5.1 - 2019-10-10
 
 * [fix] hardcode version of helm-diff to avoid Kubernetes rate limiting
