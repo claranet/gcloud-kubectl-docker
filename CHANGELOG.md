@@ -1,3 +1,7 @@
+# 1.6.1 - 2022-07-12
+
+* [ci] Fix GitHub actions publish stage
+
 # 1.6.0 - 2022-07-12
 
 * [ci] Remove TravisCI as deprecated and replace by GitHub Actions
