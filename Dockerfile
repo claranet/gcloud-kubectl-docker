@@ -3,7 +3,7 @@ FROM google/cloud-sdk:alpine
 ARG KUBE_VERSION
 ARG KUBE_BINARY_URL="https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64"
 
-LABEL version="1.6.3"
+LABEL version="1.6.4"
 
 RUN apk add --no-cache \
     bash \
