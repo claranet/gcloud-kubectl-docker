@@ -1,3 +1,7 @@
+# 1.6.2 - 2023-05-11
+
+* [ci] Add manual trigger possibility
+
 # 1.6.1 - 2022-07-12
 
 * [ci] Fix GitHub actions publish stage
