@@ -14,12 +14,12 @@ latest_version() {
 
 # get_latest_for_minor <MINOR_VERSION> <KUBE_TAGS>
 get_latest_for_minor() { 
-    echo $2 | jq '.[] | .name' | grep v1.$1 | grep -v "-" | sort -r --version-sort | head -n1 | tr -d '"'
+    echo $2 | jq '.[] | .tag_name' | grep v1.$1 | grep -v "-" | sort -r --version-sort | head -n1 | tr -d '"'
 }
 
 last4minors() {
     current_minor=$(latest_version | cut -d "." -f2)
-    kube_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/cruse/kube-apiserver-amd64/tags)
+    kube_tags=$(curl -sSL https://api.github.com/repos/kubernetes/kubernetes/releases)
 
     for minor in $(seq $((current_minor - 3)) $current_minor); do
         get_latest_for_minor $minor "$kube_tags"
@@ -29,10 +29,10 @@ last4minors() {
 # filters kube versions which were already pushed to dockerhub
 # missing_from_registry <VERSION...>
 missing_from_registry() {
-    dockerhub_tags=$(curl -sSL https://registry.hub.docker.com/v1/repositories/claranet/gcloud-kubectl-docker/tags)
+    dockerhub_tags=$(curl -sSL https://registry.hub.docker.com/v2/repositories/claranet/gcloud-kubectl-docker/tags)
 
     for version in $@; do
-        echo $dockerhub_tags | jq '.[] | .name' | grep $version > /dev/null || echo $version
+        echo $dockerhub_tags | jq '.results[] | .name' | grep $version > /dev/null || echo $version
     done
 }
 
