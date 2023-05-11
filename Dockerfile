@@ -13,8 +13,8 @@ RUN apk add --no-cache \
     git \
     openssh-client \
     openssl \
-    python \
-    py2-pip
+    python3 \
+    py3-pip
 
 # install docker
 COPY --from=docker:18 /usr/local/bin/docker* /usr/local/bin/
@@ -24,7 +24,7 @@ RUN pip install --upgrade pip
 # install docker-compose
 RUN apk add --no-cache --virtual build-deps \
     gcc \
-    python-dev \
+    python3-dev \
     libffi-dev \
     openssl-dev \
     libc-dev \
