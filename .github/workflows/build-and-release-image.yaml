@@ -5,6 +5,7 @@ on:
   schedule:
     - cron: '31 3 * * 0'
   pull_request:
+  workflow_dispatch:
   push:
     tags:
       - '*'
