@@ -1,3 +1,7 @@
+# 1.6.4 - 2023-05-11
+
+* [ci] Fix build and publish by merging the jobs
+
 # 1.6.3 - 2023-05-11
 
 * [fix] Fix version detection for tools
