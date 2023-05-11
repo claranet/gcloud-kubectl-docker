@@ -1,3 +1,9 @@
+# 1.6.3 - 2023-05-11
+
+* [fix] Fix version detection for tools
+* [fix] Fix python versions which failed image build
+* [fix] Update helmfile and helm-diff tooling
+
 # 1.6.2 - 2023-05-11
 
 * [ci] Add manual trigger possibility
