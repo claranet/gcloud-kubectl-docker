@@ -13,19 +13,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Cache Image Versions
-        id: cache-versions
-        uses: actions/cache@v3
-        with:
-          path: /tmp/gcloud-kubectl-docker-versions
-          key: image-versions
+      # - name: Cache Image Versions
+      #   id: cache-versions
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: /tmp/gcloud-kubectl-docker-versions
+      #     key: image-versions
 
-      - name: Build and publish image
+      - name: Build image
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -35,23 +36,23 @@ jobs:
           bin/image build;
           bin/image test;
 
-  publish:
-    runs-on: ubuntu-22.04
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/')
+  # publish:
+  #   runs-on: ubuntu-22.04
+  #   needs: build
+  #   if: startsWith(github.ref, 'refs/tags/')
 
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v3
 
-      - name: Cache Image Versions
-        id: cache-versions
-        uses: actions/cache@v3
-        with:
-          path: /tmp/gcloud-kubectl-docker-versions
-          key: image-versions
+  #     - name: Cache Image Versions
+  #       id: cache-versions
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /tmp/gcloud-kubectl-docker-versions
+  #         key: image-versions
 
-      - name: Build and publish image
+      - name: Publish image to registry
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
